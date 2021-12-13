@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         // Add the interactions to the ChartModifiers collection of the surface
         Collections.addAll(surface.getChartModifiers(), chartModifiers);
 
+        // -----------------------------------  Tutorial 03 - Adding Series to a Chart ----------------------------//
         // Adding Series to the Chart -----
         // In SciChart, there are special classes called RenderableSeries
         // that are responsible for drawing different chart types, such as
