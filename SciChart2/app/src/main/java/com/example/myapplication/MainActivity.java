@@ -36,6 +36,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Xml License Key for use in Mobile SDK v2 or earlier
+//        try {
+//            SciChartSurface.setRuntimeLicenseKeyFromResource(this, "app\\src\\main\\res\\raw\\license.xml");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
         try {
             SciChartSurface.setRuntimeLicenseKey("AjwAa9aqxydbZVaZpbXNWGbhLeBas0aMDwd78Ri+waPMmWm59a+K7JXn+qg7atXfDQR5usQiMSIDRZuP1D0C0c7al1za3NumxrJAn+LY1ZR/zGZU6sJGwekRz++UAalRwnA1ChePYk4HqK/+Tk7STA4sOT60+m4sfsn2A+Tlmpy+HYZEvObrvdqV25iEAReH9evERjgnRst7dffEF/SxEV3eEYN+/RL8q4/MrIGh68vcSEqPHI39t8PgsLetz3zJti46wwqBTQc5ofSrxgLnYYXAXmC+yncw/+XVQ6OICaD7S6dW0VMCqA7d1vKF0EpaFGfJ2BFuNZDrsL2fwA52bNw52BnTr33cI98LWl49k8Hyn9dx/9J+z04AMbo5PNx4uIhZIqeAIOAcvaGP1JDRNVJuVWE3bQACwtkIZiI9anSzxWaoAdzmLzan1e03nw58OkrfOL6UqxwUgbIVXuArsaYvPPFqOQNc0VGCWchThZgDGzWP0cYYYqTqDyhy4Efn3cmXsnu+vDanabQZPjijPmGBP9P8OkJbcD5rQXq7h8uyykcFu5TsD9fT4IsqNi4NEE/5+e0aNR78");
         } catch (Exception e) {
