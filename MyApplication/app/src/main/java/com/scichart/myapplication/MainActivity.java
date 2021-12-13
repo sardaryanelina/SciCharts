@@ -1,8 +1,10 @@
 package com.scichart.myapplication;
+
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Surface;
 import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.scichart.charting.ClipMode;
@@ -17,10 +19,14 @@ import com.scichart.charting.visuals.axes.IAxis;
 import com.scichart.charting.visuals.pointmarkers.EllipsePointMarker;
 import com.scichart.charting.visuals.renderableSeries.IRenderableSeries;
 import com.scichart.core.annotations.Orientation;
+import com.scichart.core.framework.UpdateSuspender;
+import com.scichart.core.model.DoubleValues;
 import com.scichart.drawing.utility.ColorUtil;
 import com.scichart.extensions.builders.SciChartBuilder;
 
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -102,8 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
         XyDataSeries lineData = sciChartBuilder.newXyDataSeries(Integer.class, Double.class).build();
         XyDataSeries scatterData = sciChartBuilder.newXyDataSeries(Integer.class, Double.class).build();
-        for (int i = 0; i < 1000; i++)
-        {
+        for (int i = 0; i < 1000; i++) {
             lineData.append(i, Math.sin(i * 0.1));
             scatterData.append(i, Math.cos(i * 0.1));
         }
@@ -172,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
         Collections.addAll(surface.getChartModifiers(), chartModifiers);
 
 
-
         // -------------------------  Tutorial 05 - Adding Tooltips and Legends ---------------------------//
         // Add a Legend
         //In SciChart, a chart legend can be created and configured via the LegendModifier:
@@ -198,5 +202,117 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         // Add the CursorModifier to the SciChartSurface
         surface.getChartModifiers().add(cursorModifier);
+
+
+        // -------------------------  Tutorial 06 - Adding Realtime Updates  ---------------------------//
+
+        // Adding New Data Values
+        //We change the way we populate lineData and scatterData by spinning up a new thread and using java.util.
+        // Timer to update it in the background.
+        //final XyDataSeries lineData2 = sciChartBuilder.newXyDataSeries(Integer.class, Double.class).build();
+   /*     final XyDataSeries lineData2 = sciChartBuilder.newXyDataSeries(Integer.class, Double.class).build();
+        final XyDataSeries scatterData2 = sciChartBuilder.newXyDataSeries(Integer.class, Double.class).build();
+
+        // Add new data on update
+        TimerTask updateDataTask = new TimerTask() {
+            @Override
+            public void run() {
+                UpdateSuspender.using(surface, new Runnable() {
+                    @Override
+                    public void run() {
+                        int x = lineData2.getCount();
+                        lineData2.append(x, Math.sin(x * 0.1));
+                        scatterData2.append(x, Math.cos(x * 0.1));
+                        // Zoom series to fit the viewport
+                        surface.zoomExtents();
+                    }
+                });
+            }
+        };
+        Timer timer = new Timer();
+        long delay = 0;
+        long interval = 10;
+        timer.schedule(updateDataTask, delay, interval);
+      */
+
+        /*
+        // Making the Code More Efficient -----
+        final XyDataSeries lineData2 = sciChartBuilder.newXyDataSeries(Integer.class, Double.class).build();
+        final XyDataSeries scatterData2 = sciChartBuilder.newXyDataSeries(Integer.class, Double.class).build();
+        final int dataCount = 1000;
+        for (int i = 0; i < dataCount; i++)
+        {
+            lineData2.append(i, Math.sin(i * 0.1));
+            scatterData2.append(i, Math.cos(i * 0.1));
+        }
+
+        final DoubleValues lineDoubleData = new DoubleValues(dataCount);
+        final DoubleValues scatterDoubleData = new DoubleValues(dataCount);
+        lineDoubleData.setSize(dataCount);
+        scatterDoubleData.setSize(dataCount);
+        TimerTask updateDataTask = new TimerTask() {
+            private double _phaseShift = 0.0;
+            @Override
+            public void run() {
+                UpdateSuspender.using(surface, new Runnable() {
+                    @Override
+                    public void run() {
+                        // Fill the DoubleValues collections
+                        for (int i = 0; i < dataCount; i++)
+                        {
+                            lineDoubleData.set(i, Math.sin(i * 0.1 + _phaseShift));
+                            scatterDoubleData.set(i, Math.cos(i * 0.1 + _phaseShift));
+                        }
+                        // Update DataSeries using bunch update
+                        lineData2.updateRangeYAt(0, lineDoubleData);
+                        scatterData2.updateRangeYAt(0, scatterDoubleData);
+                    }
+                });
+                _phaseShift += 0.01;
+            }
+        };
+        Timer timer = new Timer();
+        long delay = 0;
+        long interval = 10;
+        timer.schedule(updateDataTask, delay, interval);
+*/
+        // Scrolling Realtime (FIFO) Charts
+        // FIFO Scrolling Charts (Discarding Old Data)
+        //FifoCapacity on the DataSeries.
+        // Then, after appending new data we call zoomExtents() to make series to fit the viewport in Y direction.
+
+        // Set FIFO capacity to 500 on DataSeries
+        // Set FIFO capacity to 500 on DataSeries
+        final int fifoCapacity = 500;
+        lineData = sciChartBuilder.newXyDataSeries(Integer.class, Double.class)
+                .withFifoCapacity(fifoCapacity)
+                .build();
+
+        scatterData = sciChartBuilder.newXyDataSeries(Integer.class, Double.class)
+                .withFifoCapacity(fifoCapacity)
+                .build();
+        XyDataSeries finalLineData = lineData;
+        XyDataSeries finalScatterData = scatterData;
+        TimerTask updateDataTask = new TimerTask() {
+            private int x = 0;
+
+            @Override
+            public void run() {
+                UpdateSuspender.using(surface, new Runnable() {
+                    @Override
+                    public void run() {
+                        finalLineData.append(x, Math.sin(x * 0.1));
+                        finalScatterData.append(x, Math.cos(x * 0.1));
+                        // Zoom series to fit the viewport
+                        surface.zoomExtents();
+                        ++x;
+                    }
+                });
+            }
+        };
+        Timer timer = new Timer();
+        long delay = 0;
+        long interval = 10;
+        timer.schedule(updateDataTask, delay, interval);
     }
 }
