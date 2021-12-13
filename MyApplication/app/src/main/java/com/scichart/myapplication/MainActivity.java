@@ -283,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set FIFO capacity to 500 on DataSeries
         // Set FIFO capacity to 500 on DataSeries
+  /*
         final int fifoCapacity = 500;
         lineData = sciChartBuilder.newXyDataSeries(Integer.class, Double.class)
                 .withFifoCapacity(fifoCapacity)
@@ -303,6 +304,83 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         finalLineData.append(x, Math.sin(x * 0.1));
                         finalScatterData.append(x, Math.cos(x * 0.1));
+                        // Zoom series to fit the viewport
+                        surface.zoomExtents();
+                        ++x;
+                    }
+                });
+            }
+        };
+        Timer timer = new Timer();
+        long delay = 0;
+        long interval = 10;
+        timer.schedule(updateDataTask, delay, interval);
+*/
+
+        // -------------------------  Tutorial 07 - Adding Annotations  ---------------------------//
+
+        // Text Annotations API
+        // This API also It lets you to add other UI elements to a chart, like:
+            // Lines
+            // Text
+            // Boxes
+            // Arrows
+            // Android Views, like, e.g., an ImageView
+            // custom Markers
+        // The SciChart annotations derive from the IAnnotation interface.
+        // This annotation types include:
+        //
+        //AxisMarkerAnnotation
+        //BoxAnnotation
+        //HorizontalLineAnnotation
+        //LineAnnotation
+        //LineArrowAnnotation
+        //TextAnnotation
+        //VerticalLineAnnotation
+        //Android Views using CustomAnnotation
+
+        // Adding Annotations to the Chart
+        final int fifoCapacity = 500;
+        lineData = sciChartBuilder.newXyDataSeries(Integer.class, Double.class)
+                .withFifoCapacity(fifoCapacity)
+                .build();
+        scatterData = sciChartBuilder.newXyDataSeries(Integer.class, Double.class)
+                .withFifoCapacity(fifoCapacity)
+                .build();
+
+        XyDataSeries finalLineData = lineData;
+        XyDataSeries finalScatterData = scatterData;
+
+        TimerTask updateDataTask = new TimerTask() {
+            private int x = 0;
+            @Override
+            public void run() {
+                UpdateSuspender.using(surface, new Runnable() {
+                    @Override
+                    public void run() {
+                        finalLineData.append(x, Math.sin(x * 0.1));
+                        finalScatterData.append(x, Math.cos(x * 0.1));
+                        // New code here
+                        // Add an annotation every 100 data points
+                        if(x%100 == 0) {
+                            TextAnnotation marker = sciChartBuilder.newTextAnnotation()
+                                    .withIsEditable(false)
+                                    .withText("N")
+                                    .withBackgroundColor(ColorUtil.Green)
+                                    .withX1(x)
+                                    .withY1(0.0)
+                                    .withVerticalAnchorPoint(VerticalAnchorPoint.Center)
+                                    .withHorizontalAnchorPoint(HorizontalAnchorPoint.Center)
+                                    .withFontStyle(20, ColorUtil.White)
+                                    .withZIndex(1)
+                                    .build();
+                            surface.getAnnotations().add(marker);
+                            // Remove one annotation from the beginning
+                            // in the FIFO way
+                            if(x > fifoCapacity){
+                                surface.getAnnotations().remove(0);
+                            }
+                        }
                         // Zoom series to fit the viewport
                         surface.zoomExtents();
                         ++x;
