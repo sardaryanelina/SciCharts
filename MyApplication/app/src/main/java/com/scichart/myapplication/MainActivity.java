@@ -1,13 +1,18 @@
 package com.scichart.myapplication;
 import android.os.Bundle;
+import android.view.Surface;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.scichart.charting.model.dataSeries.XyDataSeries;
 import com.scichart.charting.modifiers.ModifierGroup;
 import com.scichart.charting.visuals.SciChartSurface;
 import com.scichart.charting.visuals.annotations.HorizontalAnchorPoint;
 import com.scichart.charting.visuals.annotations.TextAnnotation;
 import com.scichart.charting.visuals.annotations.VerticalAnchorPoint;
 import com.scichart.charting.visuals.axes.IAxis;
+import com.scichart.charting.visuals.pointmarkers.EllipsePointMarker;
+import com.scichart.charting.visuals.renderableSeries.IRenderableSeries;
 import com.scichart.drawing.utility.ColorUtil;
 import com.scichart.extensions.builders.SciChartBuilder;
 
@@ -75,5 +80,65 @@ public class MainActivity extends AppCompatActivity {
         Collections.addAll(surface.getAnnotations(), textAnnotation);
         // Add the interactions to the ChartModifiers collection of the surface
         Collections.addAll(surface.getChartModifiers(), chartModifiers);
+
+        // Adding Series to the Chart -----
+        // In SciChart, there are special classes called RenderableSeries
+        // that are responsible for drawing different chart types, such as
+        // lines (FastLineRenderableSeries),
+        // columns (FastColumnsRenderableSeries),
+        // candlestick series (FastCandlestickRenderableSeries),
+        // filled area (FastMountainRenderableSeries),
+        // heat maps (FastUniformHeatmapRenderableSeries),
+        // error bars (FastErrorBarsRenderableSeries), etc.
+
+        // In this tutorial, we are going to add a Line and a Scatter series onto the chart.
+        //
+        //First, we create some XY XyDataSeries data for both the line and scatter plots:
+
+        XyDataSeries lineData = sciChartBuilder.newXyDataSeries(Integer.class, Double.class).build();
+        XyDataSeries scatterData = sciChartBuilder.newXyDataSeries(Integer.class, Double.class).build();
+        for (int i = 0; i < 1000; i++)
+        {
+            lineData.append(i, Math.sin(i * 0.1));
+            scatterData.append(i, Math.cos(i * 0.1));
+        }
+
+        //Now add DataSeries lineData to the RenderableSeries lineSeries:
+        final IRenderableSeries lineSeries = sciChartBuilder.newLineSeries()
+                .withDataSeries(lineData)
+                .withStrokeStyle(ColorUtil.LightBlue, 2f, true)
+                .build();
+
+        // Then add it to the surface:
+        // Surface surface.getRenderableSeries().add(lineSeries);
+        surface.getRenderableSeries().add(lineSeries);
+
+//        Add a Scatter Plot -----
+//        Similarly we can create a Scatter series. It requires a PointMarker instance.
+        EllipsePointMarker pointMarker = sciChartBuilder
+                .newPointMarker(new EllipsePointMarker())
+                .withFill(ColorUtil.LightBlue)
+                .withStroke(ColorUtil.Green, 2f)
+                .withSize(10)
+                .build();
+
+        final IRenderableSeries scatterSeries = sciChartBuilder.newScatterSeries()
+                .withDataSeries(scatterData)
+                .withPointMarker(pointMarker)
+                .build();
+
+//        Then add it to the surface:
+        surface.getRenderableSeries().add(scatterSeries);
+
+        // Zooming the Chart to the Data Extents
+        // At this point our RenderableSeries is ready to be rendered.
+        // Only one detail remains.
+        //We need to bring the RenderableSeries to the Viewport of the SciChartSurface.
+        // To do this, you can either set VisibleRanges on the axes manually or
+        // call the zoomExtents() method on the SciChartSurface:
+        surface.zoomExtents();
+
+        // Note that the zoomExtents() method should always be called in the end of chart set up.
+        // This will prevent VisibleRanges on axes from being overridden after the call to zoomExtents().
     }
 }
