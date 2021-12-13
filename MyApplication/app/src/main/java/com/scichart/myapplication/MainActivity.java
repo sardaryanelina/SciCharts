@@ -20,7 +20,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        try{
+//            SciChartSurface.setRuntimeLicenseKeyFromResource(this, "app\\src\\main\\res\\raw\\license.xml");
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
 
+        // The call to setRuntimeLicenseKeyFromResource(…) should be enclosed in a try/catch block,
+        // because an exception may be thrown if the license file isn’t found.
         try {
             SciChartSurface.setRuntimeLicenseKey("FF6zQ0JxELERIxQE4v6Spjpqm2/bui2dBjHjBNELSU0LdRcx0XUNWwr6ZB0fsJNN7EhMGZDd07VVZvwH6OSrR9R6mVxuZxYhdRdwl76USE1Tz2PWo1SWY3gxV3tg/t+p5RFsZL0jIMl3HR8EzSKtWQWPPyU7eQaNyRsCHCDfWvfAjx4kNLNW15o8BkBWmEv1G4cZarcIoCgLdzQv1CzdfY9UbF3d25Udg2ojjiAeMEgjpAvFlrEF/ECw3QG5Ygr4ZiWmqp75jsAWZ0cY/2Hw9FOOA+JNCuEo8G7+UXTrmcgbS+N37HTCCg0W4WAW1YdFxLSkHJeBqMxdz27DxA7kOd1ycExpp6QH8hs+Am3CDGZ9UNCeKk3/7pzq5kKLQo2ZsBGQiLnPLlFzkHL620Y0ezFDmdh2EuUpRl0wjHZRSebkhD//xe1iKEqX8ECM6DN4VgVe2MHEklyCQLGCnunfSlpef2ucNk9VYwDovap9l541/qhaEqdOZ2idcaaihHl8fQMGL85FtQa/i/YnAF2r");
         } catch (Exception e) {
@@ -29,14 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a SciChartSurface
         SciChartSurface surface = new SciChartSurface(this);
-
-        // The call to setRuntimeLicenseKeyFromResource(…) should be enclosed in a try/catch block,
-        // because an exception may be thrown if the license file isn’t found.
-//        try{
-//            surface.setRuntimeLicenseKeyFromResource(this, "app\\src\\main\\res\\raw\\license.xml");
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
 
         // Get a layout declared in "activity_main.xml" by id
         LinearLayout chartLayout = (LinearLayout) findViewById(R.id.chart_layout);
