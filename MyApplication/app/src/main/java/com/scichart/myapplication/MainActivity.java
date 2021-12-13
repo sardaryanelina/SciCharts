@@ -4,7 +4,9 @@ import android.view.Surface;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.scichart.charting.ClipMode;
 import com.scichart.charting.model.dataSeries.XyDataSeries;
+import com.scichart.charting.modifiers.AxisDragModifierBase;
 import com.scichart.charting.modifiers.ModifierGroup;
 import com.scichart.charting.visuals.SciChartSurface;
 import com.scichart.charting.visuals.annotations.HorizontalAnchorPoint;
@@ -141,5 +143,30 @@ public class MainActivity extends AppCompatActivity {
 
         // Note that the zoomExtents() method should always be called in the end of chart set up.
         // This will prevent VisibleRanges on axes from being overridden after the call to zoomExtents().
+
+        // -----------------------------  Tutorial 04  ----------------------------------------------------//
+        // -----------------------------  Adding Zooming, Panning Behavior --------------------------------//
+        // -----------------------------  ChartModifiers --------------------------------------------------//
+// In SciChart, chart interactions are defined by ChartModifiers.
+// In addition to the SciChart modifiers you can write custom modifiers or extends existing ones.
+
+//The provided modifiers include PinchZoomModifierRubberBandXyZoomModifierZoomPanModifierZoomExtentsModifierCursorModifierRolloverModifier,
+// SeriesSelectionModifier and others.
+
+
+        //Adding Chart Modifiers -----
+        //Now we are going to create and configure a couple of new modifiers using SciChartBuilder and
+        // add them to the ChartModifiers collection of the SciChartSurface:
+
+        chartModifiers = sciChartBuilder.newModifierGroup()
+                .withPinchZoomModifier().build()
+                .withZoomPanModifier().withReceiveHandledEvents(true).build()
+                .withZoomExtentsModifier().withReceiveHandledEvents(true).build()
+                .withXAxisDragModifier().withReceiveHandledEvents(true).withDragMode(AxisDragModifierBase.AxisDragMode.Scale).withClipModeX(ClipMode.None).build()
+                .withYAxisDragModifier().withReceiveHandledEvents(true).withDragMode(AxisDragModifierBase.AxisDragMode.Pan).build()
+                .build();
+
+//        Then we add it to the collection:\
+        Collections.addAll(surface.getChartModifiers(), chartModifiers);
     }
 }
