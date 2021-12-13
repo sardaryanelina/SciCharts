@@ -1,5 +1,6 @@
 package com.scichart.myapplication;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Surface;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import com.scichart.charting.visuals.annotations.VerticalAnchorPoint;
 import com.scichart.charting.visuals.axes.IAxis;
 import com.scichart.charting.visuals.pointmarkers.EllipsePointMarker;
 import com.scichart.charting.visuals.renderableSeries.IRenderableSeries;
+import com.scichart.core.annotations.Orientation;
 import com.scichart.drawing.utility.ColorUtil;
 import com.scichart.extensions.builders.SciChartBuilder;
 
@@ -168,5 +170,33 @@ public class MainActivity extends AppCompatActivity {
 
 //        Then we add it to the collection:\
         Collections.addAll(surface.getChartModifiers(), chartModifiers);
+
+
+
+        // -------------------------  Tutorial 05 - Adding Tooltips and Legends ---------------------------//
+        // Add a Legend
+        //In SciChart, a chart legend can be created and configured via the LegendModifier:
+        // Create a LegendModifier and configure a chart legend
+        ModifierGroup legendModifier = sciChartBuilder.newModifierGroup()
+                .withLegendModifier()
+                .withOrientation(Orientation.HORIZONTAL)
+                .withPosition(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 10)
+                .build()
+                .build();
+
+// Add the LegendModifier to the SciChartSurface surface.getChartModifiers().add(legendModifier);
+
+
+        // Add a Cursor (Crosshair)
+        //CursorModifier adds a crosshair onto a SciChartSurface.
+        // When you put your finger on the screen or otherwise click it,
+        // it shows series values in tooltips and chart coordinates at that point point.
+
+        // Create and configure a CursorModifier
+        ModifierGroup cursorModifier = sciChartBuilder.newModifierGroup()
+                .withCursorModifier().withShowTooltip(true).build()
+                .build();
+        // Add the CursorModifier to the SciChartSurface
+        surface.getChartModifiers().add(cursorModifier);
     }
 }
