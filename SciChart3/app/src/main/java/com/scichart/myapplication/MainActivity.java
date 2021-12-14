@@ -1,33 +1,21 @@
 package com.scichart.myapplication;
 
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.Surface;
 import android.widget.LinearLayout;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.scichart.charting.ClipMode;
 import com.scichart.charting.model.dataSeries.XyDataSeries;
-import com.scichart.charting.modifiers.AxisDragModifierBase;
 import com.scichart.charting.modifiers.ModifierGroup;
 import com.scichart.charting.visuals.SciChartSurface;
 import com.scichart.charting.visuals.annotations.HorizontalAnchorPoint;
 import com.scichart.charting.visuals.annotations.TextAnnotation;
 import com.scichart.charting.visuals.annotations.VerticalAnchorPoint;
-import com.scichart.charting.visuals.axes.AxisAlignment;
 import com.scichart.charting.visuals.axes.IAxis;
 import com.scichart.charting.visuals.pointmarkers.EllipsePointMarker;
 import com.scichart.charting.visuals.renderableSeries.IRenderableSeries;
-import com.scichart.core.annotations.Orientation;
-import com.scichart.core.framework.UpdateSuspender;
-import com.scichart.core.model.DoubleValues;
 import com.scichart.drawing.utility.ColorUtil;
 import com.scichart.extensions.builders.SciChartBuilder;
-
 import java.util.Collections;
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 
 public class MainActivity extends AppCompatActivity {
