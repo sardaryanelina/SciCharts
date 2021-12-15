@@ -224,7 +224,8 @@ public class MainActivity extends AppCompatActivity {
                 .build()
                 .build();
 
-        // Add the LegendModifier to the SciChartSurface surface.getChartModifiers().add(legendModifier);
+        // Add the LegendModifier to the SciChartSurface
+        surface.getChartModifiers().add(legendModifier);
 
         // Add a Cursor (Crosshair)
         //CursorModifier adds a crosshair onto a SciChartSurface.
