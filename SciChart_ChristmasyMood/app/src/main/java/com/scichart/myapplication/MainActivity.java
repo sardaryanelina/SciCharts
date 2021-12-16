@@ -15,7 +15,6 @@ import java.util.Collections;
 
 
 public class MainActivity extends AppCompatActivity {
-    // Create SciChartSurface using Builders
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
                 .withAxisTitle("Merry Christmas!")
                 .withVisibleRange(-5, 15)
                 .build();
-
         // Create a numeric Y axis
         final IAxis yAxis = sciChartBuilder.newNumericAxis()
                 .withAxisTitle("2022").withVisibleRange(0, 80).build();
